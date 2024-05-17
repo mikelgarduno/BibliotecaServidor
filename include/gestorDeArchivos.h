@@ -1,0 +1,1 @@
+void guardarErrorEnLog(char* mensajeError);
