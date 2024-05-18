@@ -6,7 +6,6 @@
 #include "../include/categoria.h"
 #include "../include/editorial.h"
 #include "../include/libro.h"
-#include <winsock2.h>
 #include <winsock.h>
 
 SOCKET empezarConexion();
