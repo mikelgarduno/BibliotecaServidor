@@ -1,9 +1,3 @@
-/*
- * sockets.h
- *
- *  Created on: 17 may 2024
- *      Author: mikel
- */
 
 #ifndef SOCKETS_H_
 #define SOCKETS_H_

@@ -6,7 +6,8 @@
 #include "../include/menu.h"
 
 
+// Llamamos a la función que inicia el menu
 int main(void) {
-empezarMenu();  // Llamamos a la función que inicia el menu
+empezarMenu();  
     return 0;
 }
