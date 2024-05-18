@@ -6,13 +6,14 @@
 #include "../include/categoria.h"
 #include "../include/editorial.h"
 #include "../include/libro.h"
+#include <winsock2.h>
+#include <winsock.h>
 
-void empezarConexion();
-void cerrarConexion();
-void enviarBiblioteca();
-void enviarRespuestaRegistro();
-void enviarRespuestaLibroBorrado();
+SOCKET empezarConexion();
+void cerrarConexion(SOCKET socket);
 
+void mandarLista(SOCKET socket, char *lista, int tamanoLista);  
+void mandarRespuesta(SOCKET socket, int respuesta);
 
 
 #endif /* SOCKETS_H_ */

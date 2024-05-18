@@ -11,24 +11,20 @@
 sqlite3* abrirDB();
 void cerrarDB(sqlite3 *db);
 
-void insertarAutor(Autor objAutor);
-void insertarCategoria(Categoria objCategoria);
-void insertarEditorial(Editorial objEditorial);
-void insertarLibro(Libro objLibro);
+int insertarAutor(Autor objAutor);
+int insertarCategoria(Categoria objCategoria);
+int insertarEditorial(Editorial objEditorial);
+int insertarLibro(Libro objLibro);
+
+int borrarLibro(int id);
 
 int comprobarCategoriaNoExiste(char *nombre);
-int comprobarCategoriaNoExiste(char *nombre);
+int comprobarEditorialNoExiste(char *nombre);
 int comprobarAutorNoExiste(char *nombre);
-int comprobarLibroExistente(char *isbn);
 
-Categoria obtenerCategorias();
+Categoria* obtenerCategorias();
+Editorial* obtenerEditoriales();
+Autor* obtenerAutores();
+Libro* obtenerLibros();
 
-void mostrarAutores();
-int seleccionarAutor();
-int seleccionarCategoria();
-int seleccionarEditorial();
-
-void buscarLibroPorTitulo(char *titulo);
-void buscarLibroPorCategoria();
-void buscarLibroPorEditorial();
 #endif
