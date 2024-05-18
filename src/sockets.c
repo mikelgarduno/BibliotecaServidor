@@ -4,7 +4,11 @@
 #include "../include/categoria.h"
 #include "../include/editorial.h"
 #include "../include/libro.h"
+#include "../include/sqlManager.h"
 #include <winsock.h>
+
+#define SERVER_IP "127.0.0.1"
+#define SERVER_PORT 6000
 
 //Inicia la conexión y gestiona los inputs del usuario
 SOCKET empezarConexion(){
@@ -19,7 +23,7 @@ fflush(stdout);
 }
 
 //Manda una lista de libros, autores, categorias o editoriales
-void mandarLista(SOCKET socket, char *lista, int tamanoLista){
+void mandarLista(SOCKET socket, char **lista, int tamanoLista){
 printf("Mandar lista\n");
 fflush(stdout);
 }

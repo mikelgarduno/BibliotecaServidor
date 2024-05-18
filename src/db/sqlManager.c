@@ -271,8 +271,42 @@ Editorial* obtenerEditoriales(){
 }
 
 //Devuelve un array con todos los autores
-Autor* obtenerAutores(){
-
+char** obtenerAutores(){
+	int result; 
+	sqlite3 *db = abrirDB();
+	sqlite3_stmt *stmt;
+	const char *sql = "SELECT * FROM autor";
+	result = sqlite3_prepare_v2(db, sql, strlen(sql) + 1, &stmt, NULL);
+	if (result != SQLITE_OK) {
+		printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
+		fflush(stdout);
+		sqlite3_close(db);
+		return NULL;
+	}
+	int numColumns = sqlite3_column_count(stmt);
+	int numRows = 0;
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		numRows++;
+	}
+	char** autores = (char**)malloc(numRows * sizeof(char*));
+	for (int i = 0; i < numRows; i++) {
+		autores[i] = (char*)malloc(numColumns * 100 * sizeof(char));
+	}
+	sqlite3_reset(stmt);
+	int row = 0;
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		for (int col = 0; col < numColumns; col++) {
+			const unsigned char *value = sqlite3_column_text(stmt, col);
+			strcat(autores[row], value);
+			if (col != numColumns - 1) {
+				strcat(autores[row], ";");
+			}
+		}
+		row++;
+	}
+	sqlite3_finalize(stmt);
+	cerrarDB(db);
+	return autores;
 }
 
 //Devuelve un array con todos los libros
