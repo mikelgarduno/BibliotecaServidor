@@ -32,7 +32,7 @@ void cerrarDB(sqlite3 *db) {
 }
 
 //Inserta un autor en la base de datos
-void insertarAutor(Autor objAutor) {
+int insertarAutor(Autor objAutor) {
 	sqlite3 *db = abrirDB();
 	int result;
 
@@ -68,7 +68,7 @@ void insertarAutor(Autor objAutor) {
 }
 
 //Inserta una categoria en la base de datos
-void insertarCategoria(Categoria objCategoria) {
+int insertarCategoria(Categoria objCategoria) {
 	sqlite3 *db = abrirDB();
 	int result;
 
@@ -99,7 +99,7 @@ void insertarCategoria(Categoria objCategoria) {
 }
 
 //Inserta una editorial en la base de datos
-void insertarEditorial(Editorial objEditorial) {
+int insertarEditorial(Editorial objEditorial) {
 	sqlite3 *db = abrirDB();
 	int result;
 
@@ -133,7 +133,7 @@ void insertarEditorial(Editorial objEditorial) {
 }
 
 //Inserta un libro en la base de datos
-void insertarLibro(Libro objLibro) {
+int insertarLibro(Libro objLibro) {
 	sqlite3 *db = abrirDB();
 	int result;
 	sqlite3_stmt *stmt;
