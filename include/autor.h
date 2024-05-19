@@ -11,6 +11,6 @@ void destruir_autor(Autor *autor);
 void imprimir_autor(Autor autor);
 
 
-
+jff
 
 #endif
