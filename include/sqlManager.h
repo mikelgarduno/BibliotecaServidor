@@ -27,4 +27,6 @@ Editorial* obtenerEditoriales();
 Autor* obtenerAutores();
 Libro* obtenerLibros();
 
+void ejecutarSQL(char *sql);
+
 #endif

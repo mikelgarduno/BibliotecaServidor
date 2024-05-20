@@ -343,3 +343,22 @@ int borrarLibro(int id){
 		return 3;
 	}
 }
+
+// Función para ejecutar una consulta SQL
+void ejecutarSQL(char *sql) {
+    sqlite3 *db = abrirDB();
+    if (db == NULL) {
+        return;
+    }
+
+    char *errMsg = 0;
+    int rc = sqlite3_exec(db, sql, 0, 0, &errMsg);
+    if (rc != SQLITE_OK) {
+        printf("Error en SQL: %s\n", errMsg);
+        sqlite3_free(errMsg);
+    } else {
+        printf("Operación de SQL ejecutada con éxito\n");
+    }
+
+    cerrarDB(db);
+}
