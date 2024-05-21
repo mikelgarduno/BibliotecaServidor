@@ -162,36 +162,45 @@ void handleRegistrarLibro(SOCKET comm_socket) {
 }
 
 
-/*Cierra la conexión
-void cerrarConexion(SOCKET socket){
-printf("Cerrar conexion\n");
-fflush(stdout);
+//Cierra la conexión
+void cerrarConexion(SOCKET socket) {
+    if (closesocket(socket) == SOCKET_ERROR) {
+        printf("Error al cerrar el socket. Codigo de error: %d\n", WSAGetLastError());
+    } else {
+        printf("Conexion cerrada correctamente\n");
+    }
+    fflush(stdout);
 }
 
 //Manda una lista de libros, autores, categorias o editoriales
-void mandarLista(SOCKET socket, char **lista, int tamanoLista){
-printf("Mandar lista\n");
-fflush(stdout);
+void mandarLista(SOCKET socket, char **lista, int tamanoLista) {
+    // Concatenar todos los elementos de la lista en una cadena
+    std::string listaConcatenada;
+    for (int i = 0; i < tamanoLista; ++i) {
+        listaConcatenada += lista[i];
+        // Agregar un salto de línea después de cada elemento, si no es el último
+        if (i < tamanoLista - 1) {
+            listaConcatenada += "\n";
+        }
+    }
+
+    // Enviar la lista a través del socket
+    int bytesEnviados = send(socket, listaConcatenada.c_str(), listaConcatenada.length(), 0);
+    if (bytesEnviados == SOCKET_ERROR) {
+        printf("Error al enviar la lista. Codigo de error: %d\n", WSAGetLastError());
+    } else {
+        printf("Lista enviada correctamente\n");
+    }
+    fflush(stdout);
 }
 
-//Manda una respuesta al cliente
-void mandarRespuesta(SOCKET socket, int respuesta){
-if(respuesta == 0){
-	printf("Error en la apertura de la BD\n");
-	fflush(stdout);
-}else if(respuesta == 1){
-	printf("Se ha registrado correctamente\n");
-	fflush(stdout);
-}else if(respuesta == 2){
-	printf("Ya existia en la Base de Datos\n");
-	fflush(stdout);
-}else if(respuesta == 3){
-	printf("Se ha borrado correctamente\n");
-	fflush(stdout);
-}else if(respuesta == 4){
-	printf("Ese libro no se puede borrar\n");
-	fflush(stdout);
+// Manda una respuesta al cliente
+void mandarRespuesta(SOCKET socket, int respuesta) {
+    int bytesEnviados = send(socket, reinterpret_cast<char*>(&respuesta), sizeof(respuesta), 0);
+    if (bytesEnviados == SOCKET_ERROR) {
+        printf("Error al enviar la respuesta. Codigo de error: %d\n", WSAGetLastError());
+    } else {
+        printf("Respuesta enviada correctamente: %d\n", respuesta);
+    }
+    fflush(stdout);
 }
-}
- */
- 
