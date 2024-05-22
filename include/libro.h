@@ -8,12 +8,13 @@ typedef struct{
     char  *isbn;
 	char *titulo;
 	char *fechaCreacion;
-    Autor *autor;
-    Editorial *editorial;
-    Categoria *categoria;
+    int autor;
+    int editorial;
+    int categoria;
     char* contenido;
 }Libro;
 
-Libro *crear_libro(char* isbn ,const char *titulo, Autor *autor, Editorial *editorial, Categoria *categoria, char* contenido, char* fechaCreacion);
+Libro *crear_libro(char* isbn ,const char *titulo, int autor, int editorial, int categoria, char* contenido, char* fechaCreacion);
 void destruir_libro(Libro *libro);
+void imprimir_libro(Libro *libro);
 #endif

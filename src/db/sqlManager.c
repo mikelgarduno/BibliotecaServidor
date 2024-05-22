@@ -155,32 +155,40 @@ int insertarLibro(Libro objLibro, sqlite3* db) {
 	int result;
 	sqlite3_stmt *stmt;
 	char sql[] =
-			"INSERT INTO libro (isbn, titulo, id_aut, id_cat, id_edi) VALUES (?, ?, ?, ?, ?)";
+			"INSERT INTO libro (isbn, titulo, fecha_pub, id_aut, id_cat, id_edi, contenido) VALUES (?, ?, ?, ?, ?, ?, ?)";
 	result = sqlite3_prepare_v2(db, sql, strlen(sql) + 1, &stmt, NULL);
 	if (result != SQLITE_OK) {
 		printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
 		fflush(stdout);
 		sqlite3_close(db);
-		return;
+		return 0;
 	}
 
-	sqlite3_bind_text(stmt, 1, objLibro.isbn, strlen(objLibro.isbn),
-			SQLITE_STATIC);
-	sqlite3_bind_text(stmt, 2, objLibro.titulo, strlen(objLibro.titulo),
-			SQLITE_STATIC);
-//	sqlite3_bind_int(stmt, 3, objLibro.autor->);
-//	sqlite3_bind_int(stmt, 4, objLibro.id_cat);
-//	sqlite3_bind_int(stmt, 5, objLibro.id_edi);
+	sqlite3_bind_text(stmt, 1, objLibro.isbn, strlen(objLibro.isbn),SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 2, objLibro.titulo, strlen(objLibro.titulo),SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 3, objLibro.fechaCreacion, strlen(objLibro.fechaCreacion), SQLITE_STATIC);
+	sqlite3_bind_int(stmt, 4, objLibro.autor);
+	sqlite3_bind_int(stmt, 5, objLibro.categoria);
+	sqlite3_bind_int(stmt, 6, objLibro.editorial);
+	sqlite3_bind_text(stmt, 7, objLibro.contenido, strlen(objLibro.contenido), SQLITE_STATIC);
 
 	result = sqlite3_step(stmt);
-	if (result != SQLITE_DONE) {
+	if (result == SQLITE_CONSTRAINT) {
+		printf("El libro ya existe\n",sqlite3_errmsg(db));
+		fflush(stdout);
+		sqlite3_finalize(stmt);
+		return 2;
+	}else if(result != SQLITE_DONE){
 		printf("Error insertando datos: %s\n", sqlite3_errmsg(db));
 		fflush(stdout);
+		sqlite3_finalize(stmt);
+	return 0;
 	} else {
-		printf("Libro insertada correctamente\n");
+		printf("Libro insertado correctamente\n");
 		fflush(stdout);
+		sqlite3_finalize(stmt);
+		return 1;
 	}
-	sqlite3_finalize(stmt);
 }
 
 //Comprueba si la categoria ya existe
@@ -370,4 +378,5 @@ void ejecutarSQL(char *sql, sqlite3* db) {
     }
 
 }
+
 
