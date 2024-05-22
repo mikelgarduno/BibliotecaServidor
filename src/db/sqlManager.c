@@ -42,7 +42,7 @@ int insertarAutor(Autor objAutor, sqlite3* db) {
 	if (result != SQLITE_OK) {
 		printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
 		sqlite3_close(db);
-		return;
+		return 0;
 	}
 
 	sqlite3_bind_text(stmt, 1, objAutor.name, strlen(objAutor.name),
@@ -57,12 +57,20 @@ int insertarAutor(Autor objAutor, sqlite3* db) {
 	if (result != SQLITE_DONE) {
 		printf("Error insertando datos: %s\n", sqlite3_errmsg(db));
 		fflush(stdout);
+		sqlite3_finalize(stmt);
+		return 0;
 	} else {
 		printf("Autor insertado correctamente\n");
 		fflush(stdout);
+		sqlite3_finalize(stmt);
+		return 1;
 	}
+	}else{
+		sqlite3_finalize(stmt);
+		return 2;
 	}
-	sqlite3_finalize(stmt);
+
+
 }
 
 //Inserta una categoria en la base de datos
@@ -77,21 +85,27 @@ int insertarCategoria(Categoria objCategoria, sqlite3* db) {
 		printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
 		fflush(stdout);
 		sqlite3_close(db);
-		return;
+		return 0;
 	}
 
-	sqlite3_bind_text(stmt1, 1, objCategoria.name, strlen(objCategoria.name),
-			SQLITE_STATIC);
+	sqlite3_bind_text(stmt1, 1, objCategoria.name, strlen(objCategoria.name),SQLITE_STATIC);
 
+	if(comprobarCategoriaNoExiste(objCategoria.name, db) == 1){
 	result = sqlite3_step(stmt1);
 	if (result != SQLITE_DONE) {
 		printf("Error insertando datos: %s\n", sqlite3_errmsg(db));
 		fflush(stdout);
+		return 0;
 	} else {
 		printf("Categoria insertada correctamente\n");
 		fflush(stdout);
+		return 1;
+	}
+	}else{
+		return 2;	
 	}
 	sqlite3_finalize(stmt1);
+
 }
 
 //Inserta una editorial en la base de datos
@@ -159,7 +173,7 @@ int insertarLibro(Libro objLibro, sqlite3* db) {
 	sqlite3_finalize(stmt);
 }
 
-//COmprueba si la categoria ya existe
+//Comprueba si la categoria ya existe
 int comprobarCategoriaNoExiste(char *nombre, sqlite3* db) {
 	int result;
 
@@ -170,7 +184,7 @@ int comprobarCategoriaNoExiste(char *nombre, sqlite3* db) {
 		printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
 		fflush(stdout);
 		sqlite3_close(db);
-		return;
+		return 0;
 	}
 
 	sqlite3_bind_text(stmt, 1, nombre, strlen(nombre), SQLITE_STATIC);
@@ -337,4 +351,26 @@ void ejecutarSQL(char *sql, sqlite3* db) {
         printf("Operación de SQL ejecutada con éxito\n");
     }
 
+}
+
+//Borrar al acabar proyecto
+int isTransactionActive(sqlite3* db) {
+    sqlite3_stmt *stmt;
+    char sql[] = "SELECT * FROM sqlite_master";
+    int result = sqlite3_prepare_v2(db, sql, strlen(sql) + 1, &stmt, NULL);
+    if (result != SQLITE_OK) {
+        printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
+        fflush(stdout);
+        sqlite3_finalize(stmt);
+        return 1; // A transaction is active
+    }
+    result = sqlite3_step(stmt);
+    if (result != SQLITE_ROW) {
+        printf("Error executing statement: %s\n", sqlite3_errmsg(db));
+        fflush(stdout);
+        sqlite3_finalize(stmt);
+        return 1; // A transaction is active
+    }
+    sqlite3_finalize(stmt);
+    return 0; // No transaction is active
 }
