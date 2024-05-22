@@ -323,7 +323,7 @@ Libro* obtenerLibros(sqlite3* db){
 int borrarLibro(int id, sqlite3* db){
 	int result;
 	sqlite3_stmt *stmt;
-	const char *sql = "DELETE FROM libro WHERE id_lib = ?";
+	const char *sql = "DELETE FROM libro WHERE ISBN = ?";
 	result = sqlite3_prepare_v2(db, sql, strlen(sql) + 1, &stmt, NULL);
 	if (result != SQLITE_OK) {
 		printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
@@ -337,12 +337,20 @@ int borrarLibro(int id, sqlite3* db){
 		printf("Error borrando datos: %s\n", sqlite3_errmsg(db));
 		fflush(stdout);
 		sqlite3_finalize(stmt);
-		return 4;
+		return 0;
 	} else {
-		printf("Libro borrado correctamente\n");
-		fflush(stdout);
-		sqlite3_finalize(stmt);
-		return 3;
+		int filasAfectadas = sqlite3_changes(db);
+		if (filasAfectadas == 0) {
+			printf("No se ha encontrado ningún libro con el ID %d\n", id);
+			fflush(stdout);
+			sqlite3_finalize(stmt);
+			return 4;
+		} else {
+			printf("Libro borrado correctamente\n");
+			fflush(stdout);
+			sqlite3_finalize(stmt);
+			return 3;
+		}
 	}
 }
 
@@ -363,24 +371,3 @@ void ejecutarSQL(char *sql, sqlite3* db) {
 
 }
 
-//Borrar al acabar proyecto
-int isTransactionActive(sqlite3* db) {
-    sqlite3_stmt *stmt;
-    char sql[] = "SELECT * FROM sqlite_master";
-    int result = sqlite3_prepare_v2(db, sql, strlen(sql) + 1, &stmt, NULL);
-    if (result != SQLITE_OK) {
-        printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
-        fflush(stdout);
-        sqlite3_finalize(stmt);
-        return 1; // A transaction is active
-    }
-    result = sqlite3_step(stmt);
-    if (result != SQLITE_ROW) {
-        printf("Error executing statement: %s\n", sqlite3_errmsg(db));
-        fflush(stdout);
-        sqlite3_finalize(stmt);
-        return 1; // A transaction is active
-    }
-    sqlite3_finalize(stmt);
-    return 0; // No transaction is active
-}
