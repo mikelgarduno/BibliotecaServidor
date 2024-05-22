@@ -4,6 +4,7 @@
 #include "../include/editorial.h"
 #include "../include/libro.h"
 #include "../include/sqlManager.h"
+#include "../include/sockets.h"
 #include <iostream>
 #include <winsock.h>
 
