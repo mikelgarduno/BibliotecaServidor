@@ -10,12 +10,6 @@
 
 int main(void) {
    sqlite3* baseDeDatos = abrirDB();
-    Categoria* categoria = crearCategoria("Terror");
-    Categoria* categoria2 = crearCategoria("Aventura");
-    insertarCategoria(*categoria,baseDeDatos);
-    insertarCategoria(*categoria2,baseDeDatos);
-
-
    cerrarDB(baseDeDatos);
    return 0;
 }

@@ -95,16 +95,19 @@ int insertarCategoria(Categoria objCategoria, sqlite3* db) {
 	if (result != SQLITE_DONE) {
 		printf("Error insertando datos: %s\n", sqlite3_errmsg(db));
 		fflush(stdout);
+		sqlite3_finalize(stmt1);
 		return 0;
 	} else {
 		printf("Categoria insertada correctamente\n");
 		fflush(stdout);
+		sqlite3_finalize(stmt1);
 		return 1;
 	}
 	}else{
+		sqlite3_finalize(stmt1);
 		return 2;	
 	}
-	sqlite3_finalize(stmt1);
+	
 
 }
 
@@ -128,16 +131,23 @@ int insertarEditorial(Editorial objEditorial, sqlite3* db) {
 	sqlite3_bind_text(stmt2, 2, objEditorial.fecha, strlen(objEditorial.fecha),
 			SQLITE_STATIC);
 
+	if(comprobarEditorialNoExiste(objEditorial.nombre, db) == 1){
 	result = sqlite3_step(stmt2);
 	if (result != SQLITE_DONE) {
 		printf("Error insertando datos: %s\n", sqlite3_errmsg(db));
 		fflush(stdout);
+		sqlite3_finalize(stmt2);
+		return 0;	
 	} else {
 		printf("Editorial insertada correctamente\n");
 		fflush(stdout);
+		sqlite3_finalize(stmt2);
+		return 1;
 	}
-
-	sqlite3_finalize(stmt2);
+	}else{
+		sqlite3_finalize(stmt2);
+		return 2;
+	}
 }
 
 //Inserta un libro en la base de datos

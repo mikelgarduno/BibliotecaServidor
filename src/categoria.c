@@ -5,20 +5,20 @@
 Categoria* crearCategoria(const char *nombre) {
     Categoria *categoria = (Categoria*)malloc(sizeof(Categoria));
     if (categoria == NULL) {
-        return NULL; // Error: no se pudo asignar memoria
+        return NULL; 
     }
-    categoria->name = strdup(nombre); // Copiar el nombre de la categoría
+    categoria->name = strdup(nombre); 
     if (categoria->name == NULL) {
-        free(categoria); // Liberar la memoria asignada previamente
-        return NULL; // Error: no se pudo asignar memoria
+        free(categoria); 
+        return NULL; 
     }
     return categoria;
 }
 
 void destruirCategoria(Categoria *categoria) {
     if (categoria != NULL) {
-        free(categoria->name); // Liberar la memoria para el nombre de la categoría
-        free(categoria); // Liberar la memoria para la estructura de categoría
+        free(categoria->name);
+        free(categoria); 
     }
 }
 
