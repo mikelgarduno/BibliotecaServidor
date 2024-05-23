@@ -10,9 +10,7 @@
 
 int main(void) {
    sqlite3* baseDeDatos = abrirDB();
-   char** autores = obtenerAutores(baseDeDatos);
-   printf("Autores:\n");
-   printf("%s\n",autores[1]);
+   char **categorias = obtenerCategorias(baseDeDatos);
    cerrarDB(baseDeDatos);
    return 0;
 }

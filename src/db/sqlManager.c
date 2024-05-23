@@ -277,7 +277,43 @@ int comprobarAutorNoExiste(char *nombre, sqlite3* db) {
 
 //Devuelve un array con todas las categorias
 char** obtenerCategorias(sqlite3* db){
+	int result;
+	sqlite3_stmt *stmt;
+	const char *sql = "SELECT * FROM Categoria";
+	result = sqlite3_prepare_v2(db, sql, strlen(sql) + 1, &stmt, NULL);
+	if (result != SQLITE_OK) {
+		printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
+		fflush(stdout);
+		sqlite3_close(db);
+		return NULL;
+	}
+	
+	int numAtributos = sqlite3_column_count(stmt);
+	int numCategorias = 0;
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		numCategorias++;
+	}
 
+	char** categorias = (char**)malloc(numCategorias * sizeof(char*));
+	for (int i = 0; i < numCategorias; i++) {
+		categorias[i] = (char*)malloc(numAtributos * sizeof(char));
+	}
+	sqlite3_reset(stmt);
+
+	int categoria = 0;
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		for (int col = 0; col < numAtributos; col++) {
+			const unsigned char *letra = sqlite3_column_text(stmt, col);
+			strcat(categorias[categoria], letra);
+			if (col != numAtributos - 1) {
+				strcat(categorias[categoria], ";");
+			}
+
+		}
+		categoria++;
+	}
+	sqlite3_finalize(stmt);
+	return categorias;
 }
 
 //Devuelve un array con todas las editoriales
@@ -292,7 +328,7 @@ char** obtenerAutores(sqlite3* db){
 
 	int result; 
 	sqlite3_stmt *stmt;
-	const char *sql = "SELECT * FROM autor";
+	const char *sql = "SELECT id_aut, nombre_a, fecha_ncto, lugar_ncto  FROM autor";
 	result = sqlite3_prepare_v2(db, sql, strlen(sql) + 1, &stmt, NULL);
 	if (result != SQLITE_OK) {
 		printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
@@ -301,26 +337,28 @@ char** obtenerAutores(sqlite3* db){
 		return NULL;
 	}
 
-	int numColumns = sqlite3_column_count(stmt);
+	int numAtributos = sqlite3_column_count(stmt);
 	int numRows = 0;
 	while (sqlite3_step(stmt) == SQLITE_ROW) {
 		numRows++;
 	}
-	char** autores = (char**)malloc(numRows * sizeof(char*)); // Change the type of autores to char**
+	char** autores = (char**)malloc(numRows * sizeof(char*)); 
 	for (int i = 0; i < numRows; i++) {
-		autores[i] = (char*)malloc(numColumns * 100 * sizeof(char));
+		autores[i] = (char*)malloc(numAtributos * 100 * sizeof(char));
 	}
+	
 	sqlite3_reset(stmt);
-	int row = 0;
+	int autor = 0;
+	printf("Autores:\n");
 	while (sqlite3_step(stmt) == SQLITE_ROW) {
-		for (int col = 0; col < numColumns; col++) {
-			const unsigned char *value = sqlite3_column_text(stmt, col);
-			strcat(autores[row], value);
-			if (col != numColumns - 1) {
-				strcat(autores[row], ";");
+		for (int col = 0; col < numAtributos; col++) {
+			const unsigned char *letra = sqlite3_column_text(stmt, col);
+			strcat(autores[autor], letra);
+			if (col != numAtributos - 1) {
+				strcat(autores[autor], ";");
 			}
 		}
-		row++;
+		autor++;
 	}
 	sqlite3_finalize(stmt);
 	return autores;
