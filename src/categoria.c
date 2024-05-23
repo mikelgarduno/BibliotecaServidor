@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-Categoria* crearCategoria(const char *nombre) {
+Categoria* crearCategoria(char *nombre) {
     Categoria *categoria = (Categoria*)malloc(sizeof(Categoria));
     if (categoria == NULL) {
         return NULL; 

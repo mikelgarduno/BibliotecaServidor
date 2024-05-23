@@ -22,7 +22,7 @@ int comprobarCategoriaNoExiste(char *nombre, sqlite3* db);
 int comprobarEditorialNoExiste(char *nombre, sqlite3* db);
 int comprobarAutorNoExiste(char *nombre, sqlite3* db);
 
-char** obtenerCategorias( sqlite3* db);
+char* obtenerCategorias( sqlite3* db);
 char** obtenerEditoriales( sqlite3* db);
 char** obtenerAutores( sqlite3* db);
 char** obtenerLibros( sqlite3* db);

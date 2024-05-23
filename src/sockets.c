@@ -118,7 +118,7 @@ void handleRegistrarAutor(SOCKET comm_socket) {
     char response[] = "Autor registrado correctamente";
     send(comm_socket, response, strlen(response), 0);
 }
-*/
+
 void handleRegistrarCategoria(SOCKET comm_socket) {
 	sqlite3* db = abrirDB();
     char name[50];
@@ -147,7 +147,7 @@ void handleRegistrarEditorial(SOCKET comm_socket) {
     send(comm_socket, response, strlen(response), 0);
 	cerrarDB(db);
 }
-/*
+
 void handleRegistrarLibro(SOCKET comm_socket) {
 	sqlite3* db= abrirDB();
 	char title[1024], isbn[1024], year[1024], id_autor[1024], id_categoria[1024], id_editorial[1024];

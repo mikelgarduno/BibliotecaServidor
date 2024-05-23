@@ -5,6 +5,7 @@ typedef struct {
     char *name;
 }Categoria;
 
+
 Categoria* crearCategoria(char *nombre);
 void destruirCategoria(Categoria *categoria);
 void imprimirCategoria(Categoria *categoria);

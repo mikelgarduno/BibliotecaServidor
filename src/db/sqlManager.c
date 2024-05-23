@@ -276,10 +276,10 @@ int comprobarAutorNoExiste(char *nombre, sqlite3* db) {
 }
 
 //Devuelve un array con todas las categorias
-char** obtenerCategorias(sqlite3* db){
+char* obtenerCategorias(sqlite3* db){
 	int result;
 	sqlite3_stmt *stmt;
-	const char *sql = "SELECT * FROM Categoria";
+	const char *sql = "SELECT id_cat, nombre_c FROM Categoria";
 	result = sqlite3_prepare_v2(db, sql, strlen(sql) + 1, &stmt, NULL);
 	if (result != SQLITE_OK) {
 		printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
@@ -287,38 +287,26 @@ char** obtenerCategorias(sqlite3* db){
 		sqlite3_close(db);
 		return NULL;
 	}
-	
-	int numAtributos = sqlite3_column_count(stmt);
-	int numCategorias = 0;
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
-		numCategorias++;
-	}
 
-	char** categorias = (char**)malloc(numCategorias * sizeof(char*));
-	for (int i = 0; i < numCategorias; i++) {
-		categorias[i] = (char*)malloc(numAtributos * sizeof(char));
-	}
-	sqlite3_reset(stmt);
+	char* categorias = NULL;
+    int tamanoTotal = 0;
 
-	int categoria = 0;
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
-		for (int col = 0; col < numAtributos; col++) {
-			const unsigned char *letra = sqlite3_column_text(stmt, col);
-			strcat(categorias[categoria], letra);
-			if (col != numAtributos - 1) {
-				strcat(categorias[categoria], ";");
-			}
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        int id = sqlite3_column_int(stmt, 0);
+        const unsigned char *nombre = sqlite3_column_text(stmt, 1);
+        int tamano = snprintf(NULL, 0, "%d;%s\n", id, nombre);
+        categorias = (char*)realloc(categorias, tamanoTotal + tamano + 1);
+        snprintf(categorias + tamanoTotal, tamano + 1, "%d;%s\n", id, nombre);
+        tamanoTotal += tamano;
+    }
 
-		}
-		categoria++;
-	}
-	sqlite3_finalize(stmt);
-	return categorias;
+    sqlite3_finalize(stmt);
+    return categorias;
 }
 
 //Devuelve un array con todas las editoriales
 char** obtenerEditoriales(sqlite3* db){
-
+	
 }
 
 //Devuelve un array con todos los autores
