@@ -10,7 +10,7 @@
 
 int main(void) {
    sqlite3* baseDeDatos = abrirDB();
-   char * lista = obtenerCategorias(baseDeDatos);
+   char * lista = obtenerLibros(baseDeDatos);
    for(int i = 0; i < strlen(lista); i++) {
       printf("%c", lista[i]);
    }

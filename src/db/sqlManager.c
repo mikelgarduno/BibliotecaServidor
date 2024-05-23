@@ -305,18 +305,10 @@ char* obtenerCategorias(sqlite3* db){
 }
 
 //Devuelve un array con todas las editoriales
-char** obtenerEditoriales(sqlite3* db){
-	
-}
-
-//Devuelve un array con todos los autores
-
-
-char** obtenerAutores(sqlite3* db){ 
-
-	int result; 
+char* obtenerEditoriales(sqlite3* db){
+	int result;
 	sqlite3_stmt *stmt;
-	const char *sql = "SELECT id_aut, nombre_a, fecha_ncto, lugar_ncto  FROM autor";
+	const char *sql = "SELECT id_edi, nombre_e, fecha_fund FROM Editorial";
 	result = sqlite3_prepare_v2(db, sql, strlen(sql) + 1, &stmt, NULL);
 	if (result != SQLITE_OK) {
 		printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
@@ -325,35 +317,88 @@ char** obtenerAutores(sqlite3* db){
 		return NULL;
 	}
 
-	int numAtributos = sqlite3_column_count(stmt);
-	int numRows = 0;
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
-		numRows++;
+	char* editoriales = NULL;
+    int tamanoTotal = 0;
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        int id = sqlite3_column_int(stmt, 0);
+        const unsigned char *nombre = sqlite3_column_text(stmt, 1);
+		const unsigned char *fecha = sqlite3_column_text(stmt, 2);
+        int tamano = snprintf(NULL, 0, "%d;%s;%s\n", id, nombre,fecha);
+        editoriales = (char*)realloc(editoriales, tamanoTotal + tamano + 1);
+        snprintf(editoriales + tamanoTotal, tamano + 1, "%d;%s;%s\n", id, nombre,fecha);
+        tamanoTotal += tamano;
+    }
+
+    sqlite3_finalize(stmt);
+    return editoriales;
+}
+
+//Devuelve un array con todos los autores
+
+
+char* obtenerAutores(sqlite3* db){ 
+	int result;
+	sqlite3_stmt *stmt;
+	const char *sql = "SELECT * FROM Autor";
+	result = sqlite3_prepare_v2(db, sql, strlen(sql) + 1, &stmt, NULL);
+	if (result != SQLITE_OK) {
+		printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
+		fflush(stdout);
+		sqlite3_close(db);
+		return NULL;
 	}
-	char** autores = (char**)malloc(numRows * sizeof(char*)); 
-	for (int i = 0; i < numRows; i++) {
-		autores[i] = (char*)malloc(numAtributos * 100 * sizeof(char));
-	}
-	
-	sqlite3_reset(stmt);
-	int autor = 0;
-	printf("Autores:\n");
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
-		for (int col = 0; col < numAtributos; col++) {
-			const unsigned char *letra = sqlite3_column_text(stmt, col);
-			strcat(autores[autor], letra);
-			if (col != numAtributos - 1) {
-				strcat(autores[autor], ";");
-			}
-		}
-		autor++;
-	}
-	sqlite3_finalize(stmt);
-	return autores;
+
+	char* autores = NULL;
+    int tamanoTotal = 0;
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        int id = sqlite3_column_int(stmt, 0);
+        const unsigned char *nombre = sqlite3_column_text(stmt, 1);
+		const unsigned char *fecha = sqlite3_column_text(stmt, 2);
+		const unsigned char *lugar = sqlite3_column_text(stmt, 3);
+        int tamano = snprintf(NULL, 0, "%d;%s;%s;%s\n", id, nombre,fecha,lugar);
+        autores = (char*)realloc(autores, tamanoTotal + tamano + 1);
+		snprintf(autores + tamanoTotal, tamano + 1, "%d;%s;%s;%s\n", id,nombre,fecha,lugar);
+        tamanoTotal += tamano;
+    }
+
+    sqlite3_finalize(stmt);
+    return autores;
 }
 
 //Devuelve un array con todos los libros
-char** obtenerLibros(sqlite3* db){
+char* obtenerLibros(sqlite3* db){
+	int result;
+	sqlite3_stmt *stmt;
+	const char *sql = "SELECT * FROM Libro";
+	result = sqlite3_prepare_v2(db, sql, strlen(sql) + 1, &stmt, NULL);
+	if (result != SQLITE_OK) {
+		printf("Error preparing statement: %s\n", sqlite3_errmsg(db));
+		fflush(stdout);
+		sqlite3_close(db);
+		return NULL;
+	}
+
+	char* libros = NULL;
+	int tamanoTotal = 0;
+
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		const unsigned char *isbn = sqlite3_column_text(stmt, 0);
+		const unsigned char *titulo = sqlite3_column_text(stmt, 1);
+		const unsigned char *fecha = sqlite3_column_text(stmt, 2);
+		int id_aut = sqlite3_column_int(stmt, 3);
+		int id_cat = sqlite3_column_int(stmt, 4);
+		int id_edi = sqlite3_column_int(stmt, 5);
+		const unsigned char *contenido = sqlite3_column_text(stmt, 6);
+		int tamano = snprintf(NULL, 0, "%s;%s;%s;%d;%d;%d;%s\n",isbn,titulo,fecha,id_aut,id_cat,id_edi,contenido);
+		libros = (char*)realloc(libros, tamanoTotal + tamano + 1);
+		snprintf(libros + tamanoTotal, tamano + 1, "%s;%s;%s;%d;%d;%d;%s\n",isbn,titulo,fecha,id_aut,id_cat,id_edi,contenido);
+		tamanoTotal += tamano;
+	}
+
+	sqlite3_finalize(stmt);
+	return libros;
 
 }	
 
