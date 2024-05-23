@@ -119,32 +119,32 @@ void handleRegistrarAutor(SOCKET comm_socket) {
     char response[] = "Autor registrado correctamente";
     send(comm_socket, response, strlen(response), 0);
 }
-
-void handleRegistrarCategoria(SOCKET comm_socket) {
-    char name[1024];
+*/
+void handleRegistrarCategoria(SOCKET comm_socket, sqlite3* db) {
+    char name[50];
     recv(comm_socket, name, sizeof(name), 0);
-
-    char sql[2048];
-    snprintf(sql, sizeof(sql), "INSERT INTO Categoria (nombre_c) VALUES ('%s');", name);
-    executeSQL(sql);
+	
+	comprobarCategoriaNoExiste(name, db);
+	Categoria* categoria= crearCategoria(name);
+    insertarCategoria(*categoria,db);
 
     char response[] = "Categoria registrada correctamente";
     send(comm_socket, response, strlen(response), 0);
 }
 
-void handleRegistrarEditorial(SOCKET comm_socket) {
-    char name[1024], fecha[1024];
+void handleRegistrarEditorial(SOCKET comm_socket, sqlite3* db) {
+    char name[50], fecha[50];
     recv(comm_socket, name, sizeof(name), 0);
     recv(comm_socket, fecha, sizeof(fecha), 0);
-
-    char sql[2048];
-    snprintf(sql, sizeof(sql), "INSERT INTO Editorial (nombre_e, fecha_fund) VALUES ('%s', '%s');", name, fecha);
-    executeSQL(sql);
+	
+	comprobarEditorialNoExiste(name, db);
+    Editorial* editorial = crearEditorial(name, fecha);
+	insertarEditorial(*editorial,db);
 
     char response[] = "Editorial registrada correctamente";
     send(comm_socket, response, strlen(response), 0);
 }
-
+/*
 void handleRegistrarLibro(SOCKET comm_socket) {
 	char title[1024], isbn[1024], year[1024], id_autor[1024], id_categoria[1024], id_editorial[1024];
 	recv(comm_socket, title, sizeof(title), 0);
