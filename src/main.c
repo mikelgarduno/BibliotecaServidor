@@ -7,14 +7,10 @@
 #include "../include/sockets.h"
 #include "../include/autor.h"
 #include "../include/categoria.h"
+#include "../include/gestorDeArchivos.h"
 
 int main(void) {
    sqlite3* baseDeDatos = abrirDB();
-   char * lista = obtenerLibros(baseDeDatos);
-   for(int i = 0; i < strlen(lista); i++) {
-      printf("%c", lista[i]);
-   }
-   fflush(stdout);
    cerrarDB(baseDeDatos);
    return 0;
 }
