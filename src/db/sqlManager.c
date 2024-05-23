@@ -276,17 +276,20 @@ int comprobarAutorNoExiste(char *nombre, sqlite3* db) {
 }
 
 //Devuelve un array con todas las categorias
-Categoria* obtenerCategorias(sqlite3* db){
+char** obtenerCategorias(sqlite3* db){
 
 }
 
 //Devuelve un array con todas las editoriales
-Editorial* obtenerEditoriales(sqlite3* db){
+char** obtenerEditoriales(sqlite3* db){
 
 }
 
 //Devuelve un array con todos los autores
-char** obtenerAutores(sqlite3* db){
+
+
+char** obtenerAutores(sqlite3* db){ 
+
 	int result; 
 	sqlite3_stmt *stmt;
 	const char *sql = "SELECT * FROM autor";
@@ -297,12 +300,13 @@ char** obtenerAutores(sqlite3* db){
 		sqlite3_close(db);
 		return NULL;
 	}
+
 	int numColumns = sqlite3_column_count(stmt);
 	int numRows = 0;
 	while (sqlite3_step(stmt) == SQLITE_ROW) {
 		numRows++;
 	}
-	char** autores = (char**)malloc(numRows * sizeof(char*));
+	char** autores = (char**)malloc(numRows * sizeof(char*)); // Change the type of autores to char**
 	for (int i = 0; i < numRows; i++) {
 		autores[i] = (char*)malloc(numColumns * 100 * sizeof(char));
 	}
@@ -323,7 +327,7 @@ char** obtenerAutores(sqlite3* db){
 }
 
 //Devuelve un array con todos los libros
-Libro* obtenerLibros(sqlite3* db){
+char** obtenerLibros(sqlite3* db){
 
 }	
 
