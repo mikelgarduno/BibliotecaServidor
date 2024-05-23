@@ -84,6 +84,7 @@ SOCKET empezarConexion(){
 			printf("Error al recibir datos o conexion cerrada\n");
 			break;
 		}
+		
 		recvBuff[bytesRecibidos] = '\0';
 		printf("Comando recibido: %s\n", recvBuff);
 
@@ -120,19 +121,22 @@ void handleRegistrarAutor(SOCKET comm_socket) {
     send(comm_socket, response, strlen(response), 0);
 }
 */
-void handleRegistrarCategoria(SOCKET comm_socket, sqlite3* db) {
+void handleRegistrarCategoria(SOCKET comm_socket) {
+	sqlite3* db = abrirDB();
     char name[50];
     recv(comm_socket, name, sizeof(name), 0);
-	
+
 	comprobarCategoriaNoExiste(name, db);
 	Categoria* categoria= crearCategoria(name);
     insertarCategoria(*categoria,db);
 
     char response[] = "Categoria registrada correctamente";
     send(comm_socket, response, strlen(response), 0);
+	cerrarDB(db);
 }
 
-void handleRegistrarEditorial(SOCKET comm_socket, sqlite3* db) {
+void handleRegistrarEditorial(SOCKET comm_socket) {
+	sqlite3* db = abrirDB();
     char name[50], fecha[50];
     recv(comm_socket, name, sizeof(name), 0);
     recv(comm_socket, fecha, sizeof(fecha), 0);
@@ -143,9 +147,11 @@ void handleRegistrarEditorial(SOCKET comm_socket, sqlite3* db) {
 
     char response[] = "Editorial registrada correctamente";
     send(comm_socket, response, strlen(response), 0);
+	cerrarDB(db);
 }
 /*
 void handleRegistrarLibro(SOCKET comm_socket) {
+	sqlite3* db= abrirDB();
 	char title[1024], isbn[1024], year[1024], id_autor[1024], id_categoria[1024], id_editorial[1024];
 	recv(comm_socket, title, sizeof(title), 0);
 	recv(comm_socket, isbn, sizeof(isbn), 0);
@@ -154,12 +160,13 @@ void handleRegistrarLibro(SOCKET comm_socket) {
 	recv(comm_socket, id_categoria, sizeof(id_categoria), 0);
 	recv(comm_socket, id_editorial, sizeof(id_editorial), 0);
 
-	char sql[2048];
-	snprintf(sql, sizeof(sql), "INSERT INTO Libro (titulo, isbn, anio, id_autor, id_categoria, id_editorial) VALUES ('%s', '%s', '%s', '%s', '%s', '%s');", title, isbn, year, id_autor, id_categoria, id_editorial);
-	executeSQL(sql);
+	comprobarLibroNoExiste(isbn, db);
+	Libro* libro = crearLibro(title, isbn, year, id_autor, id_categoria, id_editorial);
+	insertarLibro(*libro, db);
 
 	char response[] = "Libro registrado correctamente";
 	send(comm_socket, response, strlen(response), 0);
+	cerrarDB(db);
 }
 
 
