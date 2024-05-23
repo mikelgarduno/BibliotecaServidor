@@ -96,15 +96,13 @@ SOCKET empezarConexion(){
 			handleRegistrarCategoria(comm_socket);
 		} else if (strcmp(recvBuff, "REGISTRAR_EDITORIAL") == 0) {
 			handleRegistrarEditorial(comm_socket);
+		} else if (strcmp(recvBuff, "BORRAR_LIBRO") == 0) {
+			handleBorrarLibro(comm_socket);
 		}
     }
-
     closesocket(comm_socket);
     WSACleanup();
     return 0;
-
-
-
 }
 
 void handleRegistrarAutor(SOCKET comm_socket) {
