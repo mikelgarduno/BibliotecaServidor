@@ -4,7 +4,6 @@
 #include <string.h>
 #include <unistd.h>
 #include "../include/sqlManager.h"
-#include "../include/sockets.h"
 #include "../include/autor.h"
 #include "../include/editorial.h"
 #include "../include/libro.h"
@@ -149,4 +148,31 @@ void handleRegistrarEditorial(SOCKET comm_socket, sqlite3* baseDeDatos) {
     char response[] = "Editorial registrada correctamente";
     send(comm_socket, response, strlen(response), 0);
 	
+}
+
+void handleRegistrarLibro(SOCKET comm_socket, sqlite3* baseDeDatos) {
+	char title[1024], isbn[1024], year[1024], id_autor[1024], id_categoria[1024], id_editorial[1024];
+	recv(comm_socket, title, sizeof(title), 0);
+	recv(comm_socket, isbn, sizeof(isbn), 0);
+	recv(comm_socket, year, sizeof(year), 0);
+	recv(comm_socket, id_autor, sizeof(id_autor), 0);
+	recv(comm_socket, id_categoria, sizeof(id_categoria), 0);
+	recv(comm_socket, id_editorial, sizeof(id_editorial), 0);
+
+	comprobarLibroNoExiste(isbn, baseDeDatos);
+	Libro* libro = crearLibro(title, isbn, year, id_autor, id_categoria, id_editorial);
+	insertarLibro(*libro, baseDeDatos);
+
+	char response[] = "Libro registrado correctamente";
+	send(comm_socket, response, strlen(response), 0);
+	
+}
+
+void handleBorrarLibro(SOCKET comm_socket, sqlite3* baseDeDatos){
+   char isbn[1024];
+   recv(comm_socket, isbn, sizeof(isbn), 0);
+   borrarLibro(isbn, baseDeDatos);
+
+   char response[] = "Libro borrado correctamente";
+   send(comm_socket, response, strlen(response), 0);
 }

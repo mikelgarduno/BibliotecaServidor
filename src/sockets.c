@@ -76,14 +76,13 @@ SOCKET empezarConexion(){
 
 	return comm_socket;
 }
-/*
-void ejecutarFunciones(){
-//ESTO IGUAL NO VA AQUI SOLO EN MAIN
+
+void ejecutarFunciones(SOCKET comm_socket) {
+	char recvBuff[1024];
+
 	while (1) {
 		recv(comm_socket, recvBuff, sizeof(recvBuff), 0);
-		
-		recvBuff[bytesRecibidos] = '\0';
-		printf("Comando recibido: %s\n", recvBuff);
+		printf("Comando recibido: %s \n", recvBuff);
 
 		if (strcmp(recvBuff, "REGISTRAR_AUTOR") == 0) {
 			handleRegistrarAutor(comm_socket);
@@ -100,10 +99,9 @@ void ejecutarFunciones(){
     closesocket(comm_socket);
     WSACleanup();
     return 0;
-
 }
 	
-
+/*
 void handleRegistrarAutor(SOCKET comm_socket) {
     char name[1024], date[1024], place[1024];
     recv(comm_socket, name, sizeof(name), 0);
@@ -167,15 +165,7 @@ void handleRegistrarLibro(SOCKET comm_socket) {
 }
 
 
-//Cierra la conexión
-void cerrarConexion(SOCKET socket) {
-    if (closesocket(socket) == SOCKET_ERROR) {
-        printf("Error al cerrar el socket. Codigo de error: %d\n", WSAGetLastError());
-    } else {
-        printf("Conexion cerrada correctamente\n");
-    }
-    fflush(stdout);
-}
+
 
 //Manda una lista de libros, autores, categorias o editoriales
 void mandarLista(SOCKET socket, char **lista, int tamanoLista) {
@@ -209,4 +199,5 @@ void mandarRespuesta(SOCKET socket, int respuesta) {
     }
     fflush(stdout);
 }
-*/
+
+
