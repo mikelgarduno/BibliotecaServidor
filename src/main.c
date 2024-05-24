@@ -85,10 +85,9 @@ int main(void) {
    printf("Conexion aceptada\n");
 
    printf("Esperando comandos del cliente...");
-   while (1) {
+   do {
       recv(comm_socket, recvBuff, sizeof(recvBuff), 0);
       printf("Comando recibido: %s \n", recvBuff);
-
       if (strcmp(recvBuff, "REGISTRAR_AUTOR") == 0) {
          handleRegistrarAutor(comm_socket, baseDeDatos);
       } else if (strcmp(recvBuff, "REGISTRAR_LIBRO") == 0) {
@@ -100,11 +99,11 @@ int main(void) {
       } else if (strcmp(recvBuff, "BORRAR_LIBRO") == 0) {
          handleBorrarLibro(comm_socket, baseDeDatos);
       }
-   }
+   } while (1);
 
-   closesocket(comm_socket);
-   WSACleanup();
-   return 0;
+   // CLOSING the sockets and cleaning Winsock...
+//	closesocket(comm_socket);
+//	WSACleanup();
 
    cerrarDB(baseDeDatos);
    return 0;
@@ -116,7 +115,7 @@ void handleRegistrarAutor(SOCKET comm_socket, sqlite3* baseDeDatos) {
     recv(comm_socket, date, sizeof(date), 0);
     recv(comm_socket, place, sizeof(place), 0);
 
-   Autor* autor = crearAutor(name, date, place);
+   Autor* autor = crear_autor(name, date, place);
    insertarAutor(*autor, baseDeDatos);
 
     char response[] = "Autor registrado correctamente";
@@ -142,7 +141,7 @@ void handleRegistrarEditorial(SOCKET comm_socket, sqlite3* baseDeDatos) {
     recv(comm_socket, fecha, sizeof(fecha), 0);
 	
 
-    Editorial* editorial = crearEditorial(name, fecha);
+    Editorial* editorial = crear_editorial(name, fecha);
 	insertarEditorial(*editorial,baseDeDatos);
 
     char response[] = "Editorial registrada correctamente";
@@ -151,7 +150,7 @@ void handleRegistrarEditorial(SOCKET comm_socket, sqlite3* baseDeDatos) {
 }
 
 void handleRegistrarLibro(SOCKET comm_socket, sqlite3* baseDeDatos) {
-	char title[1024], isbn[1024], year[1024], id_autor[1024], id_categoria[1024], id_editorial[1024];
+	char title[1024], isbn[1024], year[1024], id_autor[1024], id_categoria[1024], id_editorial[1024], contenido[1024];
 	recv(comm_socket, title, sizeof(title), 0);
 	recv(comm_socket, isbn, sizeof(isbn), 0);
 	recv(comm_socket, year, sizeof(year), 0);
@@ -159,8 +158,8 @@ void handleRegistrarLibro(SOCKET comm_socket, sqlite3* baseDeDatos) {
 	recv(comm_socket, id_categoria, sizeof(id_categoria), 0);
 	recv(comm_socket, id_editorial, sizeof(id_editorial), 0);
 
-	comprobarLibroNoExiste(isbn, baseDeDatos);
-	Libro* libro = crearLibro(title, isbn, year, id_autor, id_categoria, id_editorial);
+
+	Libro* libro = crear_libro(isbn, title, id_autor, id_editorial, id_categoria,contenido, year );
 	insertarLibro(*libro, baseDeDatos);
 
 	char response[] = "Libro registrado correctamente";
@@ -172,6 +171,7 @@ void handleBorrarLibro(SOCKET comm_socket, sqlite3* baseDeDatos){
    char isbn[1024];
    recv(comm_socket, isbn, sizeof(isbn), 0);
    borrarLibro(isbn, baseDeDatos);
+   destruir_libro(isbn);
 
    char response[] = "Libro borrado correctamente";
    send(comm_socket, response, strlen(response), 0);

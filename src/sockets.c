@@ -1,4 +1,4 @@
-
+/*
 #include "../include/autor.h"
 #include "../include/categoria.h"
 #include "../include/editorial.h"
@@ -101,7 +101,7 @@ void ejecutarFunciones(SOCKET comm_socket) {
     return 0;
 }
 	
-/*
+
 void handleRegistrarAutor(SOCKET comm_socket) {
     char name[1024], date[1024], place[1024];
     recv(comm_socket, name, sizeof(name), 0);
@@ -199,5 +199,6 @@ void mandarRespuesta(SOCKET socket, int respuesta) {
     }
     fflush(stdout);
 }
+*/
 
 
