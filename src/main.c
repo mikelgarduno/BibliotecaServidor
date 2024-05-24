@@ -244,9 +244,25 @@ void handleRegistrarLibro(SOCKET comm_socket, sqlite3* baseDeDatos) {
 void handleBorrarLibro(SOCKET comm_socket, sqlite3* baseDeDatos){
    char isbn[1024];
    recv(comm_socket, isbn, sizeof(isbn), 0);
-   borrarLibro(isbn, baseDeDatos);
-   destruir_libro(isbn);
+   
+    int resultado = atoi(isbn);
+    resultado = borrarLibro(resultado, baseDeDatos);
 
-   char response[] = "Libro borrado correctamente";
-   send(comm_socket, response, strlen(response), 0);
+   if(resultado == 0){
+        char response[] = "Error al borrar libro";
+        send(comm_socket, response, strlen(response), 0);
+        printf("Error al borrar libro\n");
+        fflush(stdout);
+    }else if(resultado == 3){
+        char response[] = "Libro borrado correctamente";
+        send(comm_socket, response, strlen(response), 0);
+        printf("Libro borrado correctamente\n");
+        fflush(stdout);
+    }else if(resultado == 4){
+        char response[] = "El libro no existe\n O ya ha sido borrado\n";
+        send(comm_socket, response, strlen(response), 0);
+        printf("El libro no existe\n");
+        fflush(stdout);
+    }
+        
 }
