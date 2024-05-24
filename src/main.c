@@ -107,6 +107,8 @@ int main(void) {
         handleRegistrarEditorial(comm_socket, baseDeDatos);
     } else if (strcmp(recvBuff, "BORRAR_LIBRO") == 0) {
         handleBorrarLibro(comm_socket, baseDeDatos);
+    } else if (strcmp(recvBuff, "BIBLIOTECA") == 0) {
+        handelBiblioteca(comm_socket, baseDeDatos);
     } else if (strcmp(recvBuff, "QUIT") == 0) {
         printf("Cerrando conexión según solicitud del cliente.\n");
         break;
@@ -265,4 +267,37 @@ void handleBorrarLibro(SOCKET comm_socket, sqlite3* baseDeDatos){
         fflush(stdout);
     }
         
+}
+
+void handelBiblioteca(comm_socket, baseDeDatos){
+    recv(comm_socket, "BIBLIOTECA", sizeof("BIBLIOTECA"), 0);
+    char* libros;
+    char* autores;
+    char* categorias;
+    char* editoriales;
+    libros = obtenerLibros(baseDeDatos);
+    autores = obtenerAutores(baseDeDatos);
+    categorias = obtenerCategorias(baseDeDatos);
+    editoriales = obtenerEditoriales(baseDeDatos);
+    // Enviar la longitud y luego los datos de cada lista
+    int length = strlen(libros);
+    send(comm_socket, (char*)&length, sizeof(length), 0);
+    send(comm_socket, libros, length, 0);
+
+    length = strlen(autores);
+    send(comm_socket, (char*)&length, sizeof(length), 0);
+    send(comm_socket, autores, length, 0);
+
+    length = strlen(categorias);
+    send(comm_socket, (char*)&length, sizeof(length), 0);
+    send(comm_socket, categorias, length, 0);
+
+    length = strlen(editoriales);
+    send(comm_socket, (char*)&length, sizeof(length), 0);
+    send(comm_socket, editoriales, length, 0);
+
+    char response[] = "Libro registrado correctamente";
+    send(comm_socket, response, strlen(response), 0);
+
+
 }
