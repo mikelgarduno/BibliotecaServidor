@@ -155,7 +155,7 @@ void handleRegistrarEditorial(SOCKET comm_socket, sqlite3* baseDeDatos) {
     recv(comm_socket, fecha, sizeof(fecha), 0);
 	
 
-    Editorial* editorial = crear_editorial(name, fecha);
+   Editorial* editorial = crear_editorial(name, fecha);
 	insertarEditorial(*editorial,baseDeDatos);
 
     char response[] = "Editorial registrada correctamente";
