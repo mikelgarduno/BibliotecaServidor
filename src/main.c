@@ -11,6 +11,7 @@
 
 int main(void) {
    sqlite3* baseDeDatos = abrirDB();
+   empezarConexion();
    cerrarDB(baseDeDatos);
    return 0;
 }

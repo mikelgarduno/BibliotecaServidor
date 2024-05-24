@@ -9,7 +9,7 @@
 #include <winsock.h>
 
 
-/*
+
 #define SERVER_IP "127.0.0.1"
 #define SERVER_PORT 6000
 
@@ -75,15 +75,11 @@ SOCKET empezarConexion(){
 	closesocket(conn_socket);
 
 	return comm_socket;
-
+}
+/*
 	//ESTO IGUAL NO VA AQUI SOLO EN MAIN
 	while (1) {
-		memset(recvBuff, 0, sizeof(recvBuff));
-		int bytesRecibidos = recv(comm_socket, recvBuff, sizeof(recvBuff), 0);
-		if (bytesRecibidos <= 0) {
-			printf("Error al recibir datos o conexion cerrada\n");
-			break;
-		}
+		recv(comm_socket, recvBuff, sizeof(recvBuff), 0);
 		
 		recvBuff[bytesRecibidos] = '\0';
 		printf("Comando recibido: %s\n", recvBuff);
