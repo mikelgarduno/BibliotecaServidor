@@ -86,27 +86,41 @@ int main(void) {
 
    printf("Esperando comandos del cliente...");
    do {
-      recv(comm_socket, recvBuff, sizeof(recvBuff), 0);
-      printf("Comando recibido: %s \n", recvBuff);
-      if (strcmp(recvBuff, "REGISTRAR_AUTOR") == 0) {
-         handleRegistrarAutor(comm_socket, baseDeDatos);
-      } else if (strcmp(recvBuff, "REGISTRAR_LIBRO") == 0) {
-         handleRegistrarLibro(comm_socket, baseDeDatos);
-      } else if (strcmp(recvBuff, "REGISTRAR_CATEGORIA") == 0) {
-         handleRegistrarCategoria(comm_socket, baseDeDatos);
-      } else if (strcmp(recvBuff, "REGISTRAR_EDITORIAL") == 0) {
-         handleRegistrarEditorial(comm_socket, baseDeDatos);
-      } else if (strcmp(recvBuff, "BORRAR_LIBRO") == 0) {
-         handleBorrarLibro(comm_socket, baseDeDatos);
-      }
+       memset(recvBuff, 0, sizeof(recvBuff)); // Limpiar el buffer antes de recibir datos
+    int recvSize = recv(comm_socket, recvBuff, sizeof(recvBuff), 0);
+
+    if (recvSize == SOCKET_ERROR) {
+        printf("Error al recibir datos. Codigo de error: %d\n", WSAGetLastError());
+        break;
+    } else if (recvSize == 0) {
+        printf("Conexión cerrada por el cliente.\n");
+        break;
+    }
+    
+   if (strcmp(recvBuff, "REGISTRAR_AUTOR") == 0) {
+        handleRegistrarAutor(comm_socket, baseDeDatos);
+    } else if (strcmp(recvBuff, "REGISTRAR_LIBRO") == 0) {
+        handleRegistrarLibro(comm_socket, baseDeDatos);
+    } else if (strcmp(recvBuff, "REGISTRAR_CATEGORIA") == 0) {
+        handleRegistrarCategoria(comm_socket, baseDeDatos);
+    } else if (strcmp(recvBuff, "REGISTRAR_EDITORIAL") == 0) {
+        handleRegistrarEditorial(comm_socket, baseDeDatos);
+    } else if (strcmp(recvBuff, "BORRAR_LIBRO") == 0) {
+        handleBorrarLibro(comm_socket, baseDeDatos);
+    } else if (strcmp(recvBuff, "QUIT") == 0) {
+        printf("Cerrando conexión según solicitud del cliente.\n");
+        break;
+    } else {
+        printf("Comando no reconocido: %s\n", recvBuff);
+    }
    } while (1);
 
    // CLOSING the sockets and cleaning Winsock...
-//	closesocket(comm_socket);
-//	WSACleanup();
+closesocket(comm_socket);
+WSACleanup();
 
-   cerrarDB(baseDeDatos);
-   return 0;
+cerrarDB(baseDeDatos);
+return 0;
 }
 
 void handleRegistrarAutor(SOCKET comm_socket, sqlite3* baseDeDatos) {
