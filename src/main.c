@@ -279,25 +279,26 @@ void handelBiblioteca(comm_socket, baseDeDatos){
     autores = obtenerAutores(baseDeDatos);
     categorias = obtenerCategorias(baseDeDatos);
     editoriales = obtenerEditoriales(baseDeDatos);
-    // Enviar la longitud y luego los datos de cada lista
-    int length = strlen(libros);
-    send(comm_socket, (char*)&length, sizeof(length), 0);
-    send(comm_socket, libros, length, 0);
+    
+    // Concatenar las listas con un delimitador
+    char* data = malloc(strlen(libros) + strlen(autores) + strlen(categorias) + strlen(editoriales) + 4); // 4 es para 4 '\n' y un '\0'
+    strcpy(data, libros);
+    strcat(data, "\n");
+    strcat(data, autores);
+    strcat(data, "\n");
+    strcat(data, categorias);
+    strcat(data, "\n");
+    strcat(data, editoriales);
 
-    length = strlen(autores);
-    send(comm_socket, (char*)&length, sizeof(length), 0);
-    send(comm_socket, autores, length, 0);
+    // Enviar los datos concatenados
+    send(comm_socket, data, strlen(data), 0);
 
-    length = strlen(categorias);
-    send(comm_socket, (char*)&length, sizeof(length), 0);
-    send(comm_socket, categorias, length, 0);
-
-    length = strlen(editoriales);
-    send(comm_socket, (char*)&length, sizeof(length), 0);
-    send(comm_socket, editoriales, length, 0);
-
-    char response[] = "Libro registrado correctamente";
-    send(comm_socket, response, strlen(response), 0);
-
-
+    // Liberar memoria
+    free(data);
+    free(libros);
+    free(autores);
+    free(categorias);
+    free(editoriales);
 }
+
+
