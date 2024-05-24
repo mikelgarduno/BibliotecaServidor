@@ -77,7 +77,8 @@ SOCKET empezarConexion(){
 	return comm_socket;
 }
 /*
-	//ESTO IGUAL NO VA AQUI SOLO EN MAIN
+void ejecutarFunciones(){
+//ESTO IGUAL NO VA AQUI SOLO EN MAIN
 	while (1) {
 		recv(comm_socket, recvBuff, sizeof(recvBuff), 0);
 		
@@ -99,7 +100,9 @@ SOCKET empezarConexion(){
     closesocket(comm_socket);
     WSACleanup();
     return 0;
+
 }
+	
 
 void handleRegistrarAutor(SOCKET comm_socket) {
     char name[1024], date[1024], place[1024];
