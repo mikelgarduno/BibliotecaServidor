@@ -130,10 +130,33 @@ void handleRegistrarAutor(SOCKET comm_socket, sqlite3* baseDeDatos) {
     recv(comm_socket, place, sizeof(place), 0);
 
    Autor* autor = crear_autor(name, date, place);
-   insertarAutor(*autor, baseDeDatos);
+   int respuesta = insertarAutor(*autor, baseDeDatos);
 
-    char response[] = "Autor registrado correctamente";
-    send(comm_socket, response, strlen(response), 0);
+    if(respuesta == 0){
+        char response[] = "Error al registrar autor";
+        send(comm_socket, response, strlen(response), 0);
+        printf("Error al registrar autor\n");
+        fflush(stdout);
+       
+    }else if(respuesta == 1){
+        char response[] = "Autor registrado correctamente";
+        send(comm_socket, response, strlen(response), 0);
+        printf("Autor registrado correctamente\n");
+        fflush(stdout);
+  
+    } else if(respuesta == 2){
+        char response[] = "El autor ya existe";
+        send(comm_socket, response, strlen(response), 0);
+        printf("El autor ya existe\n");
+        fflush(stdout);
+    }else{
+        char response[] = "Error al registsrar autor";
+        send(comm_socket, response, strlen(response), 0);
+        printf("Error al registrar autor\n");
+        fflush(stdout);
+    
+    }
+  
 }
 
 void handleRegistrarCategoria(SOCKET comm_socket, sqlite3* baseDeDatos) {
@@ -141,10 +164,28 @@ void handleRegistrarCategoria(SOCKET comm_socket, sqlite3* baseDeDatos) {
     recv(comm_socket, name, sizeof(name), 0);
 
 	Categoria* categoria= crearCategoria(name);
-   insertarCategoria(*categoria,baseDeDatos);
-
-   char response[] = "Categoria registrada correctamente";
-   send(comm_socket, response, strlen(response), 0);
+   int respuesta = insertarCategoria(*categoria,baseDeDatos);
+    if(respuesta == 0){
+        char response[] = "Error al registrar categoria";
+        send(comm_socket, response, strlen(response), 0);
+        printf("Error al registrar categoria\n");
+        fflush(stdout);
+    }else if(respuesta == 1){
+        char response[] = "Categoria registrada correctamente";
+        send(comm_socket, response, strlen(response), 0);
+        printf("Categoria registrada correctamente\n");
+        fflush(stdout);
+    }else if(respuesta == 2){
+        char response[] = "La categoria ya existe";
+        send(comm_socket, response, strlen(response), 0);
+        printf("La categoria ya existe\n");
+        fflush(stdout);
+    }else{
+        char response[] = "Error al registrar categoria";
+        send(comm_socket, response, strlen(response), 0);
+        printf("Error al registrar categoria\n");
+        fflush(stdout);
+    }
 	
 }
 
@@ -156,10 +197,29 @@ void handleRegistrarEditorial(SOCKET comm_socket, sqlite3* baseDeDatos) {
 	
 
    Editorial* editorial = crear_editorial(name, fecha);
-	insertarEditorial(*editorial,baseDeDatos);
-
-    char response[] = "Editorial registrada correctamente";
-    send(comm_socket, response, strlen(response), 0);
+	int respuesta= insertarEditorial(*editorial,baseDeDatos);
+   
+   if(respuesta == 0){
+        char response[] = "Error al registrar editorial";
+        send(comm_socket, response, strlen(response), 0);
+        printf("Error al registrar editorial\n");
+        fflush(stdout);
+    }else if(respuesta == 1){
+        char response[] = "Editorial registrada correctamente";
+        send(comm_socket, response, strlen(response), 0);
+        printf("Editorial registrada correctamente\n");
+        fflush(stdout);
+    }else if(respuesta == 2){
+        char response[] = "La editorial ya existe";
+        send(comm_socket, response, strlen(response), 0);
+        printf("La editorial ya existe\n");
+        fflush(stdout);
+    }else{
+        char response[] = "Error al registrar editorial";
+        send(comm_socket, response, strlen(response), 0);
+        printf("Error al registrar editorial\n");
+        fflush(stdout);
+    }
 	
 }
 
