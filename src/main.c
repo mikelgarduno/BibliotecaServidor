@@ -141,7 +141,7 @@ void handleRegistrarCategoria(SOCKET comm_socket, sqlite3* baseDeDatos) {
     recv(comm_socket, name, sizeof(name), 0);
 
 	Categoria* categoria= crearCategoria(name);
-    insertarCategoria(*categoria,baseDeDatos);
+   insertarCategoria(*categoria,baseDeDatos);
 
    char response[] = "Categoria registrada correctamente";
    send(comm_socket, response, strlen(response), 0);
